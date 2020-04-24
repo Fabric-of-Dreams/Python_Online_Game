@@ -4,7 +4,7 @@ from Network import Network
 width = 500
 height = 500
 win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Client")
+pygame.display.set_caption("Client2")
 
 class Player():
     def __init__(self, x, y, width, height, color):
@@ -41,7 +41,7 @@ def redrawWindow(win, player):
 def main():
     run = True
     n = Network()
-    p = Player(50, 50, 100, 100, (0, 150, 50))
+    p = Player(150, 150, 100, 100, (150, 0, 50))
 
     while run:
         for event in pygame.event.get():

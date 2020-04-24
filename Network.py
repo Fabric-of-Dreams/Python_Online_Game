@@ -20,5 +20,5 @@ class Network:
 
 # Sends client's position to the server
 
-    def sendPos(self, x, y):
+    def send_pos(self, x, y):
         self.send(self.id + ' ' + str(x) + ' ' + str(y))

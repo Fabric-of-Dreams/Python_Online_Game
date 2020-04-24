@@ -6,6 +6,7 @@ server = socket.gethostbyname(socket.gethostname())
 port = 5556
 
 new_client_id = 0
+players_positions = {}
 
 s = socket.socket()
 
@@ -24,9 +25,12 @@ def process_data(raw_data):
     print('Received: ', data)
     data_arr = data.split()
     id = int(data_arr[0])
-    x = int(data_arr[1])
-    y = int(data_arr[2])
-    print(f'id = {id}, x = {x}, y = {y}')
+    x = data_arr[1]
+    y = data_arr[2]
+    players_positions[id] = (x, y)
+    # print(f'id = {id}, x = {x}, y = {y}')
+    print(players_positions)
+
 
 def threaded_client(conn, new_client_id):
     conn.send(str.encode(str(new_client_id)))
@@ -44,7 +48,7 @@ def threaded_client(conn, new_client_id):
 
                 print('Sending: ', reply)
 
-            conn.sendall(str.encode(reply))
+            conn.send(str.encode(reply))
         except:
             break
 
