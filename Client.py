@@ -1,11 +1,10 @@
 import pygame
+from Network import Network
 
 width = 500
 height = 500
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
-
-clientNumber = 0
 
 class Player():
     def __init__(self, x, y, width, height, color):
@@ -15,7 +14,7 @@ class Player():
         self.height = height
         self.color = color
         self.rect = (x, y, width, height)
-        self.vel = 0.1
+        self.vel = 1
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
@@ -27,7 +26,6 @@ class Player():
             self.x -= self.vel
         if keys[pygame.K_RIGHT]:
             self.x += self.vel
-            print('Right')
         if keys[pygame.K_UP]:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
@@ -42,6 +40,7 @@ def redrawWindow(win, player):
 
 def main():
     run = True
+    n = Network()
     p = Player(50, 50, 100, 100, (0, 150, 50))
 
     while run:
@@ -49,7 +48,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-
+        n.send(str(p.x) + ' ' + str(p.y))
         p.move()
         redrawWindow(win, p)
 

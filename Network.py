@@ -4,14 +4,11 @@ class Network:
     def __init__(self):
         self.client = socket.socket()
         self.server = socket.gethostbyname(socket.gethostname())
-        self.port = 5555
+        self.port = 5556
         self.addr = (self.server, self.port)
-        self.id = self.connect()
-        print(self.id)
-
-    def connect(self):
         self.client.connect(self.addr)
-        return self.client.recv(2048).decode()
+        self.id = self.client.recv(2048).decode()
+        print('id =', self.id)
 
     def send(self, data):
         try:
@@ -20,6 +17,8 @@ class Network:
         except socket.error as e:
             print(e)
 
-n = Network()
-print(n.send('hello'))
-print(n.send('working'))
+
+# Sends client's position to the server
+
+    def sendPos(self, x, y):
+        self.send(self.id + ' ' + str(x) + ' ' + str(y))
