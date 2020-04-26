@@ -41,11 +41,12 @@ def redrawWindow(win, player, opp_pos):
     if opp_pos != " ":
         filtered_pos = "".join(filter(lambda c: c not in ['(', "'", ',', ')'], opp_pos))
         opp_pos_list = filtered_pos.split()
-        opp_x = int(opp_pos_list[0])
-        opp_y = int(opp_pos_list[1])
+        opp_color = (int(opp_pos_list[0]), int(opp_pos_list[1]), int(opp_pos_list[2]))
+        opp_x = int(opp_pos_list[3])
+        opp_y = int(opp_pos_list[4])
 
         rect = (opp_x, opp_y, 50, 50)
-        pygame.draw.rect(win, (150, 0, 50), rect)
+        pygame.draw.rect(win, opp_color, rect)
 
     pygame.display.update()
 
@@ -65,7 +66,7 @@ def main():
                 run = False
                 pygame.quit()
 
-        opp_pos = n.send_pos(p.x, p.y)
+        opp_pos = n.send_color_and_pos(p.color, p.x, p.y)
         print('Received ', opp_pos)
         p.move()
         redrawWindow(win, p, opp_pos)

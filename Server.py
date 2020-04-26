@@ -25,7 +25,6 @@ print('Waiting for a connection')
 def threaded_client(conn, new_client_id):
     player_color = players_colors[new_client_id % len(players_colors)]
     conn.send(str.encode(str(new_client_id) + ' ' + str(player_color)))
-    reply = ''
     while True:
         try:
             raw_data = conn.recv(2048)
@@ -35,12 +34,15 @@ def threaded_client(conn, new_client_id):
                 break
             else:
                 data = raw_data.decode('utf-8')
-                # print('Received: ', data)
-                data_arr = data.split()
-                id = int(data_arr[0])
-                x = data_arr[1]
-                y = data_arr[2]
-                players_positions[id] = (x, y)
+                filtered_data = "".join(filter(lambda c: c not in ['(', "'", ',', ')'], data))
+                data_list = filtered_data.split()
+                id = int(data_list[0])
+                color_r = data_list[1]
+                color_g = data_list[2]
+                color_b = data_list[3]
+                x = data_list[4]
+                y = data_list[5]
+                players_positions[id] = (color_r, color_g, color_b, x, y)
                 opponents_positions = players_positions.copy()
                 opponents_positions.pop(id)
 

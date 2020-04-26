@@ -23,7 +23,7 @@ class Network:
             print(e)
 
 
-# Sends client's position to the server and get all player positions in response
+# Sends client's id, color and position to the server and get oppenent's id, color and position in response
 
-    def send_pos(self, x, y):
-        return self.send(self.id + ' ' + str(x) + ' ' + str(y))
+    def send_color_and_pos(self, color, x, y):
+        return self.send(self.id + ' ' + str(color) + ' ' + str(x) + ' ' + str(y))
