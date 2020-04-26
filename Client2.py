@@ -4,7 +4,7 @@ from Network import Network
 width = 500
 height = 500
 win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Client2")
+pygame.display.set_caption("Client")
 
 class Player():
     def __init__(self, x, y, width, height, color):
@@ -33,23 +33,41 @@ class Player():
 
         self.rect = (self.x, self.y, self.width, self.height)
 
-def redrawWindow(win, player):
+def redrawWindow(win, player, opp_pos):
     win.fill((255, 255, 255))
     player.draw(win)
+
+    # Draw opponents
+    if opp_pos != " ":
+        filtered_pos = "".join(filter(lambda c: c not in ['(', "'", ',', ')'], opp_pos))
+        opp_pos_list = filtered_pos.split()
+        opp_x = int(opp_pos_list[0])
+        opp_y = int(opp_pos_list[1])
+
+        rect = (opp_x, opp_y, 50, 50)
+        pygame.draw.rect(win, (150, 0, 50), rect)
+
     pygame.display.update()
+
 
 def main():
     run = True
     n = Network()
-    p = Player(150, 150, 100, 100, (150, 0, 50))
+
+    print('My id is ', n.id)
+    print('My color is ', n.color)
+
+    p = Player(30, 30, 50, 50, n.color)
 
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-        n.send_pos(p.x, p.y)
+
+        opp_pos = n.send_pos(p.x, p.y)
+        print('Received ', opp_pos)
         p.move()
-        redrawWindow(win, p)
+        redrawWindow(win, p, opp_pos)
 
 main()

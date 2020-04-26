@@ -6,6 +6,7 @@ server = socket.gethostbyname(socket.gethostname())
 port = 5556
 
 new_client_id = 0
+players_colors = [(150, 0, 50), (0, 50, 150), (50, 150, 0)]
 players_positions = {}
 
 s = socket.socket()
@@ -20,38 +21,41 @@ s.listen(2)
 print("Server Started")
 print('Waiting for a connection')
 
-def process_data(raw_data):
-    data = raw_data.decode('utf-8')
-    print('Received: ', data)
-    data_arr = data.split()
-    id = int(data_arr[0])
-    x = data_arr[1]
-    y = data_arr[2]
-    players_positions[id] = (x, y)
-    # print(f'id = {id}, x = {x}, y = {y}')
-    print(players_positions)
-
 
 def threaded_client(conn, new_client_id):
-    conn.send(str.encode(str(new_client_id)))
+    player_color = players_colors[new_client_id % len(players_colors)]
+    conn.send(str.encode(str(new_client_id) + ' ' + str(player_color)))
     reply = ''
     while True:
         try:
             raw_data = conn.recv(2048)
-            reply = raw_data.decode('utf-8')
 
             if not raw_data:
                 print('Disconnected')
                 break
             else:
-                process_data(raw_data)
+                data = raw_data.decode('utf-8')
+                # print('Received: ', data)
+                data_arr = data.split()
+                id = int(data_arr[0])
+                x = data_arr[1]
+                y = data_arr[2]
+                players_positions[id] = (x, y)
+                opponents_positions = players_positions.copy()
+                opponents_positions.pop(id)
 
-                print('Sending: ', reply)
+                opponents_positions_list = list(opponents_positions.values())
+                if len(opponents_positions_list) != 0:
+                    first_opp_pos = opponents_positions_list[0]
+                    print('Sending: ', str(first_opp_pos))
+                    conn.send(str.encode(str(first_opp_pos)))
+                else:
+                    conn.send(str.encode(' '))
 
-            conn.send(str.encode(reply))
         except:
             break
 
+    players_positions.pop(new_client_id)
     print('Lost connection')
     conn.close()
 

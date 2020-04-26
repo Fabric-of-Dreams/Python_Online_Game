@@ -7,8 +7,13 @@ class Network:
         self.port = 5556
         self.addr = (self.server, self.port)
         self.client.connect(self.addr)
-        self.id = self.client.recv(2048).decode()
-        print('id =', self.id)
+
+        id_and_color = self.client.recv(2048).decode()
+        filtered_id_an_color = "".join(filter(lambda c: c not in ['(', "'", ',', ')'], id_and_color))
+        id_and_color_list = filtered_id_an_color.split()
+
+        self.id = id_and_color_list[0]
+        self.color = (int(id_and_color_list[1]), int(id_and_color_list[2]), int(id_and_color_list[3]))
 
     def send(self, data):
         try:
@@ -18,7 +23,7 @@ class Network:
             print(e)
 
 
-# Sends client's position to the server
+# Sends client's position to the server and get all player positions in response
 
     def send_pos(self, x, y):
-        self.send(self.id + ' ' + str(x) + ' ' + str(y))
+        return self.send(self.id + ' ' + str(x) + ' ' + str(y))
